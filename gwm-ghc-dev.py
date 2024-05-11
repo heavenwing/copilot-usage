@@ -1,4 +1,5 @@
 import asyncio
+import json
 from mitmproxy import http, ctx
 from elasticsearch import Elasticsearch, ConnectionTimeout, ApiError
 from datetime import datetime
@@ -87,6 +88,16 @@ class SaveLogtoElasticSearch:
         timeconsumed = round((flow.response.timestamp_end - flow.request.timestamp_start) * 1000, 2)
         timeconsumed_str = f"{timeconsumed}ms"  
  
+        try:
+            request_content = json.loads(flow.request.content.decode('utf-8', 'ignore')),
+        except json.JSONDecodeError:
+            request_content = {}
+    
+        try:
+            response_content = json.loads(flow.response.content.decode('utf-8', 'ignore')),
+        except json.JSONDecodeError:
+            response_content = {}
+
         # save to es
         doc = {
             'user': username,
@@ -96,12 +107,12 @@ class SaveLogtoElasticSearch:
                 # 'url': url_type,
                 # 'method': flow.request.method,
                 'headers': dict(flow.request.headers),
-                'content': flow.request.content.decode('utf-8', 'ignore'),
+                'content': request_content,
             },
             'response': {
                 'status_code': flow.response.status_code,
                 'headers': dict(flow.response.headers),
-                'content': flow.response.content.decode('utf-8', 'ignore'),
+                'content': response_content,
             }
         }
         
