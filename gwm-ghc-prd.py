@@ -93,15 +93,16 @@ class SaveLogtoElasticSearch:
         timeconsumed = round((flow.response.timestamp_end - flow.request.timestamp_start) * 1000, 2)
         timeconsumed_str = f"{timeconsumed}ms"  
  
-        try:
-            request_content = json.loads(flow.request.content.decode('utf-8', 'ignore')),
-        except json.JSONDecodeError:
-            request_content = {}
+        # below code don't consider jsonl and Server Sent Events
+        # try:
+        #     request_content = json.loads(flow.request.content.decode('utf-8', 'ignore')),
+        # except json.JSONDecodeError:
+        #     request_content = {}
     
-        try:
-            response_content = json.loads(flow.response.content.decode('utf-8', 'ignore')),
-        except json.JSONDecodeError:
-            response_content = {}
+        # try:
+        #     response_content = json.loads(flow.response.content.decode('utf-8', 'ignore')),
+        # except json.JSONDecodeError:
+        #     response_content = {}
 
         # save to es
         doc = {
@@ -112,22 +113,20 @@ class SaveLogtoElasticSearch:
                 # 'url': flow.request.url,
                 # 'method': flow.request.method,
                 'headers': dict(flow.request.headers),
-                'content': request_content,
+                'content': flow.request.content.decode('utf-8', 'ignore'),
             },
             'response': {
                 'status_code': flow.response.status_code,
                 'headers': dict(flow.response.headers),
-                'content': response_content,
+                'content': flow.response.content.decode('utf-8', 'ignore'),
             }
         }
         
         try:
             # change the index name to your own
             index_name = None
-            if url_type == 'completions':
-                index_name = 'github-copilot-completions'
-            if url_type == 'telemetry':
-                index_name = 'github-copilot-telemetry'
+            if url_type == 'completions' or url_type == 'telemetry':
+                index_name = 'github-copilot-' + url_type
             if index_name is None:
                 ctx.log.warn(f"Don't support this url type: {url_type}")
                 return
