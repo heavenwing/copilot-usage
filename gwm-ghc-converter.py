@@ -1,5 +1,6 @@
 import json
 import csv
+import sys
 
 
 def parse_contents(content, content_type):
@@ -13,8 +14,17 @@ def parse_contents(content, content_type):
         return None
 
 
+def get_jsonl_filename():
+    if len(sys.argv) > 1:
+        return sys.argv[1]
+    else:
+        return 'test.jsonl'
+
+
 def main():
-    with open('test.jsonl', 'r', encoding='utf8') as jsonl_file, open('telemetry_data.csv', 'w', newline='', encoding='utf8') as csv_file:
+    jsonl_filename = get_jsonl_filename()
+
+    with open(jsonl_filename, 'r', encoding='utf8') as jsonl_file, open('telemetry_data.csv', 'w', newline='', encoding='utf8') as csv_file:
         csv_writer = csv.writer(csv_file)
         header = ['user', 'eventName', 'languageId', 'common_extname', 'common_extversion', 'common_vscodeversion', 'common_os', 'common_platformversion']
         csv_writer.writerow(header)
