@@ -47,13 +47,14 @@ def main():
                 # print(f"telemetry data {i} common_platformversion: {req['data']['baseData']['properties']['common_platformversion']}")
                 row = [
                     data['user'],
-                    req['data']['baseData']['name'],
+                    req['data']['baseData'].get('name', 'N/A'),
                     req['data']['baseData']['properties'].get('languageId', 'N/A'),
                     req['data']['baseData']['properties'].get('common_extname', 'N/A'),
                     req['data']['baseData']['properties'].get('common_extversion', 'N/A'),
                     req['data']['baseData']['properties'].get('common_vscodeversion', 'N/A'),
                     req['data']['baseData']['properties'].get('common_os', 'N/A'),
                     req['data']['baseData']['properties'].get('common_platformversion', 'N/A')
+                    # req['data']['baseData']['properties'].get('common_vscodesessionid', 'N/A')
                 ]
                 csv_writer.writerow(row)
 

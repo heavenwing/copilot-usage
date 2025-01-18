@@ -53,7 +53,7 @@ class SaveLogtoElasticSearch:
 
         # verify username whether exist and be in user_list
         if not proxy_auth:
-            flow.response = http.Response.make(401)
+            flow.response = http.HTTPResponse.make(401)
             ctx.log.warn("No Proxy-Authorization header found")
             return
 
@@ -61,7 +61,7 @@ class SaveLogtoElasticSearch:
         username = base64.b64decode(auth_string).decode("utf-8").split(":")[0]
         
         if username not in self.user_list:
-            flow.response = http.Response.make(401)
+            flow.response = http.HTTPResponse.make(401)
             ctx.log.warn(f"username not in user list: {username}")
             return
         

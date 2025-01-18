@@ -3,3 +3,4 @@ allowed_users.txt
 config.ini
 es_ca.crt
 *.jsonl
+telemetry_data.csv
