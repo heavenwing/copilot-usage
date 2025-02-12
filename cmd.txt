@@ -1,0 +1,10 @@
+docker build -t gwm-copilot-usage .
+
+docker run --rm -it \
+    -p 8080:8080/tcp \
+    -v ./configs:/ghcscript/configs \
+    gwm-copilot-usage:latest
+
+docker run --rm -it \
+    -p 8080:8080/tcp \
+    gwm-copilot-usage:latest

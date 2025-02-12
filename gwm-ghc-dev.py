@@ -16,7 +16,7 @@ import configparser
 # es_password=<your es password>
 # es_host=<your es url:9200>
 config = configparser.ConfigParser()
-config.read('./config.ini')
+config.read('./configs/config.ini')
 
 ELASTICSEARCH_USERNAME = config.get('es', 'es_username') 
 ELASTICSEARCH_PASSWORD = config.get('es', 'es_password')
@@ -25,7 +25,7 @@ ELASTICSEARCH_URL = config.get('es', 'es_host')
 es = Elasticsearch(
     [ELASTICSEARCH_URL],
     http_auth=(ELASTICSEARCH_USERNAME, ELASTICSEARCH_PASSWORD),
-    ca_certs='es_ca.crt'
+    ca_certs='./configs/es_ca.crt'
 )
 
 
@@ -35,7 +35,7 @@ class SaveLogtoElasticSearch:
         self.loop = asyncio.get_event_loop()
         self.proxy_authorizations = {} 
         # allowed_users.txt only contains a list of username 
-        self.user_list = self.load_users("./allowed_users.txt")
+        self.user_list = self.load_users("./configs/allowed_users.txt")
     
     def load_users(self, file_path):
         if not os.path.exists(file_path):
